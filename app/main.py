@@ -55,6 +55,11 @@ app.include_router(users.router, prefix="/api/v1", tags=["users"])
 app.include_router(internal.router, prefix="/api/v1", tags=["internal"])
 
 
-@app.get("/health")
+@app.get("/health", tags=["health"])
 async def health_check():
-    return {"status": "ok"}
+    """Health check endpoint con metadatos básicos del servicio."""
+    return {
+        "status": "ok",
+        "service": "gac-api",
+        "version": app.version,
+    }
