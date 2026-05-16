@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
-from sqlalchemy import String, Integer, ForeignKey, Text, Numeric, func
+from sqlalchemy import String, Integer, ForeignKey, Text, Numeric, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from app.core.database import Base
@@ -32,9 +32,11 @@ class Order(Base):
     )  # Check constraint handled in DB or Pydantic
     total_amount: Mapped[Decimal | None] = mapped_column(Numeric(12, 2), default=0)
     notes: Mapped[str | None] = mapped_column(Text)
-    created_at: Mapped[datetime | None] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
     updated_at: Mapped[datetime | None] = mapped_column(
-        server_default=func.now(), onupdate=func.now()
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
     items: Mapped[list[OrderItem]] = relationship(
@@ -63,6 +65,8 @@ class OrderItem(Base):
     product_key: Mapped[str | None] = mapped_column(String(50))
     quantity: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     unit_price: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
-    created_at: Mapped[datetime | None] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
     order: Mapped[Order] = relationship(back_populates="items")

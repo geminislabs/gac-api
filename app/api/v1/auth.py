@@ -7,7 +7,7 @@ from app.core.database import get_db
 from app.api.deps import get_current_user
 from app.models.users import User
 from app.schemas.common import ResponseModel
-from app.schemas.auth import Token, UserResponse, PasswordUpdate
+from app.schemas.auth import Token, UserResponse, PasswordUpdate, RefreshTokenRequest
 from app.services.auth_service import AuthService
 from app.services.user_service import UserService
 
@@ -32,16 +32,12 @@ async def login(
 
 @router.post("/auth/refresh", response_model=ResponseModel[Token])
 async def refresh_token(
-    refresh_token: str,  # Passed as query param or body? Prompt says POST, usually body.
+    payload: RefreshTokenRequest,
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    # For simplicity, accepting as query param or form if not specified,
-    # but let's assume body for better security practice if possible,
-    # but prompt didn't specify schema for refresh.
-    # Let's use a simple body model or query param.
-    # Using query param for simplicity unless body model defined.
+    """Renueva el par de tokens a partir de un refresh token válido."""
     service = AuthService(db)
-    token = await service.refresh_token(refresh_token)
+    token = await service.refresh_token(payload.refresh_token)
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -33,3 +33,7 @@ class UserResponse(BaseModel):
 
 class PasswordUpdate(BaseModel):
     new_password: str
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
