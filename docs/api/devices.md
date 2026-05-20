@@ -60,4 +60,3 @@ curl -X GET "http://localhost:8000/api/v1/devices" \
 - Este endpoint requiere autenticación con cualquier rol válido
 - La respuesta puede variar dependiendo de la integración con siscom-admin-api
 - Los datos pueden provenir de un caché local para mejorar el rendimiento
-

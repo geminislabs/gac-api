@@ -82,4 +82,5 @@ async def debug_current_user(
     }
     return ResponseModel(message="User debug info", data=user_info)
 
+
 router.include_router(catalog_internal.router)

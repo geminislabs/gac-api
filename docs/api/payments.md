@@ -213,4 +213,3 @@ curl -X GET "http://localhost:8000/api/v1/clients/550e8400-e29b-41d4-a716-446655
 - Los IDs de pago son UUIDs v4
 - Los montos se manejan con precisión decimal
 - Las referencias de transacción son opcionales pero recomendadas para trazabilidad
-

@@ -89,7 +89,9 @@ async def get_catalog_product(
                 message="Product retrieved successfully",
                 data=_to_out(row),
             )
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+    )
 
 
 @router.post(
@@ -149,7 +151,9 @@ async def update_catalog_product(
             message="Product updated successfully",
             data=_to_out(row),
         )
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+    )
 
 
 @router.delete("/products/{product_id}", response_model=ResponseModel[bool])
@@ -164,4 +168,6 @@ async def delete_catalog_product(
             row["is_active"] = False
             row["updated_at"] = _now()
             return ResponseModel(message="Product deactivated successfully", data=True)
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+    )
