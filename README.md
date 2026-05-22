@@ -25,7 +25,11 @@ Backend API for Gemini Admin Console (GAC).
 
 5. Run the server:
    ```bash
-   uvicorn app.main:app --reload
+   # Para desarrollo local
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 5160
+
+   # Para acceso desde otras máquinas/red (como EC2)
+   uvicorn app.main:app --host 0.0.0.0 --port 5160
    ```
 
 ## Documentation
