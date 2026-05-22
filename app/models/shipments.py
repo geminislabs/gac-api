@@ -2,7 +2,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
-from sqlalchemy import String, ForeignKey, func
+from sqlalchemy import String, ForeignKey, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID, JSONB
 from app.core.database import Base
@@ -31,9 +31,11 @@ class Shipment(Base):
         String(50)
     )  # pending, packed, shipped, delivered
     address: Mapped[dict | None] = mapped_column(JSONB)
-    created_at: Mapped[datetime | None] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
     updated_at: Mapped[datetime | None] = mapped_column(
-        server_default=func.now(), onupdate=func.now()
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
     order: Mapped["Order"] = relationship(back_populates="shipments")

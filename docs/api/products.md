@@ -142,4 +142,3 @@ El sistema incluye los siguientes productos por defecto:
 - La clave (`key`) del producto debe ser única en el sistema
 - Los productos se almacenan en memoria (no persistentes en la versión actual)
 - Se recomienda usar claves en formato slug (minúsculas, sin espacios, guiones permitidos)
-

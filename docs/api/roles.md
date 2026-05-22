@@ -228,4 +228,3 @@ El sistema típicamente incluye los siguientes roles:
 - Un usuario puede tener múltiples roles
 - Los IDs de rol son UUIDs v4
 - Revocar un rol no elimina el rol del sistema, solo lo desvincula del usuario
-

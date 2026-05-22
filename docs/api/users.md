@@ -371,4 +371,3 @@ curl -X PATCH "http://localhost:8000/api/v1/users/550e8400-e29b-41d4-a716-446655
 - La eliminación es "soft delete" (solo desactiva `is_active`)
 - Las contraseñas se almacenan hasheadas con Argon2
 - El reset de contraseña no invalida los tokens existentes del usuario
-

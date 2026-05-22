@@ -1,7 +1,9 @@
+from decimal import Decimal
 from uuid import UUID
 from typing import List, Optional
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
 from app.models.orders import Order, OrderItem
@@ -9,6 +11,8 @@ from app.schemas.orders import OrderCreate
 
 
 class OrderService:
+    """Operaciones de negocio sobre órdenes de compra GAC."""
+
     def __init__(self, db: AsyncSession):
         self.db = db
 
@@ -19,13 +23,13 @@ class OrderService:
             client_id=order_in.client_id,
             notes=order_in.notes,
             created_by=created_by,
-            status="pending",  # Initial status
-            total_amount=0,  # Will be calculated
+            status="pending",
+            total_amount=Decimal("0.00"),
         )
         self.db.add(db_order)
-        await self.db.flush()  # To get order_id
+        await self.db.flush()  # Necesario para tener order_id
 
-        total_amount = 0
+        total_amount = Decimal("0.00")
         for item in order_in.items:
             db_item = OrderItem(
                 order_id=db_order.order_id,
@@ -35,7 +39,7 @@ class OrderService:
                 unit_price=item.unit_price,
             )
             self.db.add(db_item)
-            total_amount += item.quantity * item.unit_price
+            total_amount += Decimal(item.quantity) * Decimal(item.unit_price)
 
         db_order.total_amount = total_amount
         await self.db.commit()
@@ -56,6 +60,34 @@ class OrderService:
             select(Order)
             .options(selectinload(Order.items))
             .where(Order.client_id == client_id)
+            .order_by(Order.created_at.desc())
         )
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
+
+    async def list_orders(
+        self,
+        skip: int = 0,
+        limit: int = 100,
+        status: Optional[str] = None,
+    ) -> List[Order]:
+        """Devuelve un listado paginado de órdenes ordenadas por fecha desc."""
+        stmt = (
+            select(Order)
+            .options(selectinload(Order.items))
+            .order_by(Order.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+        )
+        if status:
+            stmt = stmt.where(Order.status == status)
+
+        result = await self.db.execute(stmt)
+        return list(result.scalars().all())
+
+    async def count_orders(self, status: Optional[str] = None) -> int:
+        stmt = select(func.count()).select_from(Order)
+        if status:
+            stmt = stmt.where(Order.status == status)
+        result = await self.db.execute(stmt)
+        return int(result.scalar() or 0)
