@@ -313,4 +313,3 @@ python -c "import secrets; print(secrets.token_hex(32))"
 | Cifrado local       | No nativo              | v4.local (XChaCha20)       |
 | Vulnerabilidades    | Múltiples conocidas    | Diseño resistente          |
 | Tamaño del token    | Más pequeño            | Ligeramente mayor          |
-

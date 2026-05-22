@@ -46,7 +46,9 @@ async def list_shipments(
 ):
     """Lista paginada de envíos con filtro opcional por estado."""
     service = ShipmentService(db)
-    shipments = await service.list_shipments(skip=skip, limit=limit, status=status_filter)
+    shipments = await service.list_shipments(
+        skip=skip, limit=limit, status=status_filter
+    )
     return ResponseModel(message="Shipments retrieved successfully", data=shipments)
 
 
@@ -80,9 +82,7 @@ async def update_shipment_status(
     shipment = await service.update_status(shipment_id, status_in.status)
     if not shipment:
         raise HTTPException(status_code=404, detail="Shipment not found")
-    return ResponseModel(
-        message="Shipment status updated successfully", data=shipment
-    )
+    return ResponseModel(message="Shipment status updated successfully", data=shipment)
 
 
 @router.get(

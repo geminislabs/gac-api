@@ -188,4 +188,3 @@ curl -X GET "http://localhost:8000/api/v1/clients/550e8400-e29b-41d4-a716-446655
 - Los IDs de orden son UUIDs v4
 - El campo `created_by` se asigna automáticamente con el ID del usuario autenticado
 - Los estados posibles de una orden pueden incluir: `pending`, `processing`, `completed`, `cancelled`
-

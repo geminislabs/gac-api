@@ -1,6 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
+from app.core.errors import format_validation_errors, validation_error_message
 from app.api.v1 import (
     orders,
     payments,
@@ -42,6 +45,37 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(RequestValidationError)
+async def request_validation_exception_handler(
+    request: Request, exc: RequestValidationError
+):
+    errors = format_validation_errors(exc.errors())
+    return JSONResponse(
+        status_code=422,
+        content={
+            "message": validation_error_message(exc.errors()),
+            "data": None,
+            "error": "validation_error",
+            "detail": errors,
+        },
+    )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    detail = exc.detail
+    message = detail if isinstance(detail, str) else str(detail)
+    content: dict = {
+        "message": message,
+        "data": None,
+        "error": f"http_{exc.status_code}",
+    }
+    if not isinstance(detail, str):
+        content["detail"] = detail
+    return JSONResponse(status_code=exc.status_code, content=content)
+
 
 # Include Routers
 app.include_router(orders.router, prefix="/api/v1", tags=["orders"])

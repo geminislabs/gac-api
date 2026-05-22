@@ -202,4 +202,3 @@ curl -X PATCH "http://localhost:8000/api/v1/auth/password" \
 - Siempre usar HTTPS en producción
 - No almacenar tokens en localStorage; preferir httpOnly cookies cuando sea posible
 - El cambio de contraseña no invalida los tokens existentes (considerar implementar revocación si es necesario)
-

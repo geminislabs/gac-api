@@ -236,4 +236,3 @@ pending → processing → in_transit → delivered
 - Los IDs de envío son UUIDs v4
 - Se recomienda actualizar el estado del envío conforme avanza en la cadena de entrega
 - Los envíos pueden asociarse opcionalmente a una orden existente
-
