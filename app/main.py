@@ -5,10 +5,10 @@ from fastapi.responses import JSONResponse
 
 from app.core.errors import format_validation_errors, validation_error_message
 from app.api.v1 import (
+    clients,
     orders,
     payments,
     shipments,
-    products,
     devices,
     auth,
     roles,
@@ -78,10 +78,10 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
 
 # Include Routers
+app.include_router(clients.router, prefix="/api/v1", tags=["clients"])
 app.include_router(orders.router, prefix="/api/v1", tags=["orders"])
 app.include_router(payments.router, prefix="/api/v1", tags=["payments"])
 app.include_router(shipments.router, prefix="/api/v1", tags=["shipments"])
-app.include_router(products.router, prefix="/api/v1", tags=["products"])
 app.include_router(devices.router, prefix="/api/v1", tags=["devices"])
 app.include_router(auth.router, prefix="/api/v1", tags=["auth"])
 app.include_router(roles.router, prefix="/api/v1", tags=["roles"])
