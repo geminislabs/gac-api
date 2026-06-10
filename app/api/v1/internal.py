@@ -2,7 +2,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.v1 import catalog_internal
 from app.api.deps import require_roles
 from app.core.paseto import create_app_token, refresh_app_token
 from app.models.users import User
@@ -81,6 +80,3 @@ async def debug_current_user(
         "has_admin_role": "admin" in roles,
     }
     return ResponseModel(message="User debug info", data=user_info)
-
-
-router.include_router(catalog_internal.router)
