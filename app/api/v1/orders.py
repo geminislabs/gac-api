@@ -27,7 +27,10 @@ async def create_order(
     """Crea una nueva orden vinculada al usuario autenticado."""
     service = OrderService(db)
     order = await service.create_order(order_in, current_user.user_id)
-    return ResponseModel(message="Order created successfully", data=order)
+    return ResponseModel(
+        message="Order created successfully",
+        data=OrderResponse.model_validate(order),
+    )
 
 
 @router.get(
@@ -57,7 +60,10 @@ async def get_order(
     order = await service.get_order(order_id)
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return ResponseModel(message="Order retrieved successfully", data=order)
+    return ResponseModel(
+        message="Order retrieved successfully",
+        data=OrderResponse.model_validate(order),
+    )
 
 
 @router.get(
