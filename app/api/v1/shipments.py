@@ -30,7 +30,10 @@ async def create_shipment(
 ):
     service = ShipmentService(db)
     shipment = await service.create_shipment(shipment_in)
-    return ResponseModel(message="Shipment created successfully", data=shipment)
+    return ResponseModel(
+        message="Shipment created successfully",
+        data=ShipmentResponse.model_validate(shipment),
+    )
 
 
 @router.get(
@@ -49,7 +52,10 @@ async def list_shipments(
     shipments = await service.list_shipments(
         skip=skip, limit=limit, status=status_filter
     )
-    return ResponseModel(message="Shipments retrieved successfully", data=shipments)
+    return ResponseModel(
+        message="Shipments retrieved successfully",
+        data=[ShipmentResponse.model_validate(s) for s in shipments],
+    )
 
 
 @router.get(
@@ -65,7 +71,10 @@ async def get_shipment(
     shipment = await service.get_shipment(shipment_id)
     if not shipment:
         raise HTTPException(status_code=404, detail="Shipment not found")
-    return ResponseModel(message="Shipment retrieved successfully", data=shipment)
+    return ResponseModel(
+        message="Shipment retrieved successfully",
+        data=ShipmentResponse.model_validate(shipment),
+    )
 
 
 @router.patch(
@@ -82,7 +91,10 @@ async def update_shipment_status(
     shipment = await service.update_status(shipment_id, status_in.status)
     if not shipment:
         raise HTTPException(status_code=404, detail="Shipment not found")
-    return ResponseModel(message="Shipment status updated successfully", data=shipment)
+    return ResponseModel(
+        message="Shipment status updated successfully",
+        data=ShipmentResponse.model_validate(shipment),
+    )
 
 
 @router.get(
@@ -96,4 +108,7 @@ async def get_client_shipments(
 ):
     service = ShipmentService(db)
     shipments = await service.get_shipments_by_client(client_id)
-    return ResponseModel(message="Shipments retrieved successfully", data=shipments)
+    return ResponseModel(
+        message="Shipments retrieved successfully",
+        data=[ShipmentResponse.model_validate(s) for s in shipments],
+    )
