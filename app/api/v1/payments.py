@@ -26,7 +26,10 @@ async def create_payment(
 ):
     service = PaymentService(db)
     payment = await service.create_payment(payment_in)
-    return ResponseModel(message="Payment created successfully", data=payment)
+    return ResponseModel(
+        message="Payment created successfully",
+        data=PaymentResponse.model_validate(payment),
+    )
 
 
 @router.get(
@@ -43,7 +46,10 @@ async def list_payments(
     """Lista paginada de pagos con filtro opcional por estado."""
     service = PaymentService(db)
     payments = await service.list_payments(skip=skip, limit=limit, status=status_filter)
-    return ResponseModel(message="Payments retrieved successfully", data=payments)
+    return ResponseModel(
+        message="Payments retrieved successfully",
+        data=[PaymentResponse.model_validate(p) for p in payments],
+    )
 
 
 @router.get("/payments/{payment_id}", response_model=ResponseModel[PaymentResponse])
@@ -56,7 +62,10 @@ async def get_payment(
     payment = await service.get_payment(payment_id)
     if not payment:
         raise HTTPException(status_code=404, detail="Payment not found")
-    return ResponseModel(message="Payment retrieved successfully", data=payment)
+    return ResponseModel(
+        message="Payment retrieved successfully",
+        data=PaymentResponse.model_validate(payment),
+    )
 
 
 @router.get(
@@ -70,4 +79,7 @@ async def get_client_payments(
 ):
     service = PaymentService(db)
     payments = await service.get_payments_by_client(client_id)
-    return ResponseModel(message="Payments retrieved successfully", data=payments)
+    return ResponseModel(
+        message="Payments retrieved successfully",
+        data=[PaymentResponse.model_validate(p) for p in payments],
+    )

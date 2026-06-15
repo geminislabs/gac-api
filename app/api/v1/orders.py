@@ -47,7 +47,10 @@ async def list_orders(
     """Lista paginada de órdenes con filtro opcional por estado."""
     service = OrderService(db)
     orders = await service.list_orders(skip=skip, limit=limit, status=status_filter)
-    return ResponseModel(message="Orders retrieved successfully", data=orders)
+    return ResponseModel(
+        message="Orders retrieved successfully",
+        data=[OrderResponse.model_validate(o) for o in orders],
+    )
 
 
 @router.get("/orders/{order_id}", response_model=ResponseModel[OrderResponse])
@@ -77,4 +80,7 @@ async def get_client_orders(
 ):
     service = OrderService(db)
     orders = await service.get_orders_by_client(client_id)
-    return ResponseModel(message="Orders retrieved successfully", data=orders)
+    return ResponseModel(
+        message="Orders retrieved successfully",
+        data=[OrderResponse.model_validate(o) for o in orders],
+    )
