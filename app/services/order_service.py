@@ -43,8 +43,9 @@ class OrderService:
 
         db_order.total_amount = total_amount
         await self.db.commit()
-        await self.db.refresh(db_order, attribute_names=["items"])
-        return db_order
+        order = await self.get_order(db_order.order_id)
+        assert order is not None
+        return order
 
     async def get_order(self, order_id: UUID) -> Optional[Order]:
         stmt = (
