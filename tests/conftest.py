@@ -1,21 +1,17 @@
 """Fixtures compartidas para tests de gac-api (sin base de datos real)."""
 
-import os
+import sys
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
 
-# Variables mínimas antes de importar settings / app
-os.environ.setdefault("DB_HOST", "localhost")
-os.environ.setdefault("DB_PORT", "5432")
-os.environ.setdefault("DB_USER", "test")
-os.environ.setdefault("DB_PASSWORD", "test")
-os.environ.setdefault("DB_NAME", "test")
-os.environ.setdefault("DB_SCHEME", "gac")
-os.environ.setdefault("JWT_SECRET", "test-jwt-secret-key-for-unit-tests")
-os.environ.setdefault("JWT_ALGORITHM", "HS256")
-os.environ.setdefault("PASETO_SECRET_KEY", "dGVzdC1wYXNldG8tc2VjcmV0LWtleS0zMmJ5dGVz")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from bootstrap_env import bootstrap_test_runtime
+
+bootstrap_test_runtime()
 
 from app.main import app  # noqa: E402
 

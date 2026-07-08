@@ -1,9 +1,9 @@
 from decimal import Decimal
-from uuid import UUID
 from typing import List, Optional
+from uuid import UUID
 
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
 from app.models.orders import Order, OrderItem

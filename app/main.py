@@ -3,18 +3,18 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.core.errors import format_validation_errors, validation_error_message
 from app.api.v1 import (
+    auth,
     clients,
+    devices,
+    internal,
     orders,
     payments,
-    shipments,
-    devices,
-    auth,
     roles,
+    shipments,
     users,
-    internal,
 )
+from app.core.errors import format_validation_errors, validation_error_message
 
 app = FastAPI(
     title="GAC API",

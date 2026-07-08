@@ -1,13 +1,14 @@
 from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database import get_db
 from app.api.deps import get_current_user
+from app.core.database import get_db
 from app.models.users import User
+from app.schemas.auth import PasswordUpdate, RefreshTokenRequest, Token, UserResponse
 from app.schemas.common import ResponseModel
-from app.schemas.auth import Token, UserResponse, PasswordUpdate, RefreshTokenRequest
 from app.services.auth_service import AuthService
 from app.services.user_service import UserService
 
