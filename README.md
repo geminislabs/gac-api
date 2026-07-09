@@ -54,6 +54,15 @@ pre-commit run --all-files
 
 On each `git commit`, pre-commit runs Ruff and Black. Los tests se ejecutan en CI (`quality.yml`) y con `make test` / `make validate`.
 
+PostgreSQL de test local (integración futura):
+
+```bash
+make test-db-up    # puerto 5433
+make test-db-down
+```
+
+Ver `tests/README.md` para fixtures SQLite (`db_session_sqlite`, `client_sqlite`).
+
 ## Documentation
 
 - Swagger UI: `/docs`

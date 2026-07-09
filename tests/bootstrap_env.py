@@ -22,3 +22,6 @@ def apply_test_env_defaults() -> None:
 
 def bootstrap_test_runtime() -> None:
     apply_test_env_defaults()
+    from sqlite_dialect import register_sqlite_dialect_compat
+
+    register_sqlite_dialect_compat()

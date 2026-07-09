@@ -86,4 +86,10 @@ migrations-down:  ## Revierte la última migración
 migrations-history:  ## Muestra el historial de migraciones
 	alembic history
 
+test-db-up:  ## Levanta PostgreSQL de test (docker-compose.test.yml)
+	docker compose -f docker-compose.test.yml up -d
+
+test-db-down:  ## Detiene PostgreSQL de test
+	docker compose -f docker-compose.test.yml down
+
 dev: run-dev  ## Alias de run-dev
