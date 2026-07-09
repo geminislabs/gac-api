@@ -1,4 +1,4 @@
-.PHONY: help install install-dev lint format format-check test test-cov build run run-dev stop clean deploy-test validate all-checks health logs shell db-shell migrations-create migrations-up migrations-down migrations-history dev
+.PHONY: help install install-dev lint format format-check test test-cov build run run-dev stop clean deploy-test validate all-checks health logs shell db-shell migrations-create migrations-up migrations-down migrations-history dev scan-secrets audit-deps scan-osv verify-github-config
 
 help:  ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -23,7 +23,7 @@ test:  ## Ejecuta los tests
 	pytest tests/ -v
 
 test-cov:  ## Ejecuta los tests con coverage (umbrales en pyproject.toml / CI)
-	pytest tests/ -v --cov=app --cov-report=term-missing --cov-report=html
+	pytest tests/ -v --cov=app --cov-report=term-missing --cov-report=html --cov-fail-under=65
 
 build:  ## Construye la imagen Docker
 	docker build -t gac-api:latest .
@@ -32,8 +32,8 @@ run:  ## Ejecuta el contenedor localmente (producción)
 	docker network create siscom-network 2>/dev/null || true
 	docker-compose -f docker-compose.prod.yml up -d
 
-run-dev:  ## Ejecuta en modo desarrollo con hot-reload (puerto 8000)
-	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+run-dev:  ## Ejecuta en modo desarrollo con hot-reload (puerto 8200)
+	uvicorn app.main:app --reload --host 0.0.0.0 --port 8200
 
 stop:  ## Detiene los contenedores
 	docker-compose -f docker-compose.prod.yml down
@@ -63,7 +63,7 @@ deploy-test-stop:  ## Detiene el deployment de prueba
 
 health:  ## Verifica el health check
 	@echo "Verificando health check..."
-	@curl -f http://localhost:8000/health && echo "\n✅ Health check OK" || echo "\n❌ Health check FAILED"
+	@curl -f http://localhost:8200/health && echo "\n✅ Health check OK" || echo "\n❌ Health check FAILED"
 
 shell:  ## Abre una shell en el contenedor
 	docker exec -it gac-api /bin/bash
@@ -93,3 +93,15 @@ test-db-down:  ## Detiene PostgreSQL de test
 	docker compose -f docker-compose.test.yml down
 
 dev: run-dev  ## Alias de run-dev
+
+scan-secrets:  ## Escanea secretos con Gitleaks
+	bash scripts/gitleaks-scan.sh
+
+audit-deps:  ## Audita dependencias con pip-audit
+	bash scripts/pip-audit-scan.sh
+
+scan-osv:  ## Escanea vulnerabilidades con OSV-Scanner
+	bash scripts/osv-scan.sh
+
+verify-github-config:  ## Lista variables/secrets requeridos para GitHub Actions
+	bash scripts/verify_github_config.sh

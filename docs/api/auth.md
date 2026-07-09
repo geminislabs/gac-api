@@ -43,7 +43,7 @@ Autentica un usuario y retorna tokens de acceso.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/auth/login" \
+curl -X POST "http://localhost:8200/api/v1/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=admin@example.com&password=secretpassword"
 ```
@@ -86,7 +86,7 @@ Genera un nuevo access token usando un refresh token válido.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/auth/refresh?refresh_token=eyJhbGciOi..."
+curl -X POST "http://localhost:8200/api/v1/auth/refresh?refresh_token=eyJhbGciOi..."
 ```
 
 ---
@@ -131,7 +131,7 @@ Obtiene el perfil del usuario autenticado actualmente.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/auth/me" \
+curl -X GET "http://localhost:8200/api/v1/auth/me" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
@@ -187,7 +187,7 @@ Permite al usuario autenticado cambiar su propia contraseña. No requiere la con
 ### Ejemplo cURL
 
 ```bash
-curl -X PATCH "http://localhost:8000/api/v1/auth/password" \
+curl -X PATCH "http://localhost:8200/api/v1/auth/password" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
   -H "Content-Type: application/json" \
   -d '{"new_password": "NuevaContraseña123!"}'

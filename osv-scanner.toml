@@ -1,0 +1,8 @@
+# OSV-Scanner config for requirements.txt (repo root).
+# Docs: https://google.github.io/osv-scanner/configuration/
+
+[[PackageOverrides]]
+name = "pip"
+ecosystem = "PyPI"
+vulnerability.ignore = true
+reason = "pip is not pinned in requirements.txt; false positive from pip-* tooling packages"

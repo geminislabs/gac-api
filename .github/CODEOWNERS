@@ -1,0 +1,13 @@
+# Default reviewers — replace @geminislabs/engineering with your GitHub team slug
+* @geminislabs/engineering
+
+# Authentication and security
+/app/core/security.py @geminislabs/engineering
+/app/core/paseto.py @geminislabs/engineering
+/app/api/deps.py @geminislabs/engineering
+
+# CI/CD and release
+/.github/workflows/ @geminislabs/engineering
+/.github/dependabot.yml @geminislabs/engineering
+/scripts/ @geminislabs/engineering
+/Dockerfile @geminislabs/engineering

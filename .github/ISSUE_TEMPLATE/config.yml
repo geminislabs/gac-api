@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contributing guide
+    url: https://github.com/geminislabs/gac-api/blob/develop/CONTRIBUTING.md
+    about: Read CONTRIBUTING.md before opening an issue or PR

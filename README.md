@@ -29,7 +29,7 @@ Backend API for Gemini Admin Console (GAC).
    ```bash
    make run-dev
    ```
-   Servidor en http://localhost:8000 con hot-reload.
+   Servidor en http://localhost:8200 con hot-reload.
 
 ## Development (lint, tests, CI)
 
@@ -37,7 +37,7 @@ Backend API for Gemini Admin Console (GAC).
 make help           # Ver comandos disponibles
 make validate       # format-check + lint + test + docker build (como CI)
 make all-checks     # format-check + lint + test
-make run-dev        # uvicorn --reload en puerto 8000
+make run-dev        # uvicorn --reload en puerto 8200
 ```
 
 Register git hooks (once per clone):
@@ -62,6 +62,17 @@ make test-db-down
 ```
 
 Ver `tests/README.md` para fixtures SQLite (`db_session_sqlite`, `client_sqlite`).
+
+Seguridad y gobernanza (paridad con siscom-api):
+
+```bash
+make scan-secrets          # Gitleaks
+make audit-deps            # pip-audit
+make scan-osv              # OSV-Scanner
+make verify-github-config  # checklist de secrets/vars
+```
+
+Documentación de gobernanza: `docs/GOVERNANCE.md`, `CONTRIBUTING.md`, `AGENTS.md`.
 
 ## Documentation
 

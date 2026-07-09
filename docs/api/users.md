@@ -66,7 +66,7 @@ Crea un nuevo usuario en el sistema.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/users" \
+curl -X POST "http://localhost:8200/api/v1/users" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -127,7 +127,7 @@ Lista todos los usuarios del sistema con paginación.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/users?skip=0&limit=10" \
+curl -X GET "http://localhost:8200/api/v1/users?skip=0&limit=10" \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -178,7 +178,7 @@ Obtiene los detalles de un usuario específico.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/users/550e8400-e29b-41d4-a716-446655440001" \
+curl -X GET "http://localhost:8200/api/v1/users/550e8400-e29b-41d4-a716-446655440001" \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -247,7 +247,7 @@ Actualiza parcialmente un usuario existente.
 ### Ejemplo cURL
 
 ```bash
-curl -X PATCH "http://localhost:8000/api/v1/users/550e8400-e29b-41d4-a716-446655440001" \
+curl -X PATCH "http://localhost:8200/api/v1/users/550e8400-e29b-41d4-a716-446655440001" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"full_name": "Juan Carlos Pérez"}'
@@ -294,7 +294,7 @@ Desactiva un usuario (soft delete). No elimina físicamente el registro.
 ### Ejemplo cURL
 
 ```bash
-curl -X DELETE "http://localhost:8000/api/v1/users/550e8400-e29b-41d4-a716-446655440001" \
+curl -X DELETE "http://localhost:8200/api/v1/users/550e8400-e29b-41d4-a716-446655440001" \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -356,7 +356,7 @@ Permite a un administrador resetear la contraseña de cualquier usuario sin cono
 ### Ejemplo cURL
 
 ```bash
-curl -X PATCH "http://localhost:8000/api/v1/users/550e8400-e29b-41d4-a716-446655440001/password" \
+curl -X PATCH "http://localhost:8200/api/v1/users/550e8400-e29b-41d4-a716-446655440001/password" \
   -H "Authorization: Bearer <admin_token>" \
   -H "Content-Type: application/json" \
   -d '{"new_password": "NuevaContraseña123!"}'

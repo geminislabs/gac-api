@@ -49,7 +49,7 @@ Este endpoint actúa como proxy hacia siscom-admin-api o consulta un caché loca
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/devices" \
+curl -X GET "http://localhost:8200/api/v1/devices" \
   -H "Authorization: Bearer <token>"
 ```
 
