@@ -1,12 +1,13 @@
-from uuid import UUID
 from typing import List, Optional
+from uuid import UUID
+
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
 from sqlalchemy.orm import selectinload
 
-from app.models.users import User, Role, UserRole
-from app.schemas.users import UserCreate, UserUpdate
 from app.core.security import get_password_hash
+from app.models.users import Role, User, UserRole
+from app.schemas.users import UserCreate, UserUpdate
 
 
 class UserService:

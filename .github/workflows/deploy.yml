@@ -265,7 +265,7 @@ jobs:
             # Verificar que el health endpoint responde
             echo "4. Verificando health endpoint:"
             CONTAINER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' gac-api)
-            APP_PORT=$(docker exec gac-api printenv PORT 2>/dev/null || echo "8000")
+            APP_PORT=$(docker exec gac-api printenv PORT 2>/dev/null || echo "8200")
             if curl -f -s http://localhost:${APP_PORT}/health > /dev/null 2>&1 || curl -f -s http://$CONTAINER_IP:${APP_PORT}/health > /dev/null 2>&1; then
               echo "✅ Health endpoint responde correctamente en puerto ${APP_PORT}"
             else

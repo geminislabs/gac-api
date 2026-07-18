@@ -67,7 +67,7 @@ Crea una nueva orden en el sistema.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/orders" \
+curl -X POST "http://localhost:8200/api/v1/orders" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -123,7 +123,7 @@ Obtiene los detalles de una orden específica.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/orders/550e8400-e29b-41d4-a716-446655440001" \
+curl -X GET "http://localhost:8200/api/v1/orders/550e8400-e29b-41d4-a716-446655440001" \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -176,7 +176,7 @@ Obtiene todas las órdenes de un cliente específico.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/clients/550e8400-e29b-41d4-a716-446655440000/orders" \
+curl -X GET "http://localhost:8200/api/v1/clients/550e8400-e29b-41d4-a716-446655440000/orders" \
   -H "Authorization: Bearer <token>"
 ```
 

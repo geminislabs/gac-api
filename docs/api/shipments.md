@@ -72,7 +72,7 @@ Crea un nuevo envío en el sistema.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/shipments" \
+curl -X POST "http://localhost:8200/api/v1/shipments" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -143,7 +143,7 @@ Actualiza el estado de un envío específico.
 ### Ejemplo cURL
 
 ```bash
-curl -X PATCH "http://localhost:8000/api/v1/shipments/550e8400-e29b-41d4-a716-446655440030/status" \
+curl -X PATCH "http://localhost:8200/api/v1/shipments/550e8400-e29b-41d4-a716-446655440030/status" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"status": "in_transit"}'
@@ -200,7 +200,7 @@ Obtiene todos los envíos de un cliente específico.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/clients/550e8400-e29b-41d4-a716-446655440000/shipments" \
+curl -X GET "http://localhost:8200/api/v1/clients/550e8400-e29b-41d4-a716-446655440000/shipments" \
   -H "Authorization: Bearer <token>"
 ```
 
