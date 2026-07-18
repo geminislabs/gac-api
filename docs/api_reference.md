@@ -2,7 +2,7 @@
 
 Documentación completa de la API de GAC.
 
-**Base URL**: `http://localhost:8000/api/v1`
+**Base URL**: `http://localhost:8200/api/v1`
 
 ---
 
@@ -105,7 +105,7 @@ La API utiliza autenticación basada en tokens JWT (Bearer tokens).
 ### Obtener Token
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/auth/login" \
+curl -X POST "http://localhost:8200/api/v1/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=admin@example.com&password=secretpassword"
 ```
@@ -113,7 +113,7 @@ curl -X POST "http://localhost:8000/api/v1/auth/login" \
 ### Usar Token
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/auth/me" \
+curl -X GET "http://localhost:8200/api/v1/auth/me" \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -171,7 +171,7 @@ Algunos endpoints soportan paginación con los parámetros:
 
 Ejemplo:
 ```bash
-curl "http://localhost:8000/api/v1/users?skip=0&limit=10"
+curl "http://localhost:8200/api/v1/users?skip=0&limit=10"
 ```
 
 ---

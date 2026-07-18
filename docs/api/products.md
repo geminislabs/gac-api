@@ -44,7 +44,7 @@ Obtiene la lista de todos los productos disponibles.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/products" \
+curl -X GET "http://localhost:8200/api/v1/products" \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -104,7 +104,7 @@ Crea un nuevo producto en el sistema.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/products" \
+curl -X POST "http://localhost:8200/api/v1/products" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{

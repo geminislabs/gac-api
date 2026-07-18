@@ -68,7 +68,7 @@ Registra un nuevo pago en el sistema.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/payments" \
+curl -X POST "http://localhost:8200/api/v1/payments" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -127,7 +127,7 @@ Obtiene los detalles de un pago específico.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/payments/550e8400-e29b-41d4-a716-446655440010" \
+curl -X GET "http://localhost:8200/api/v1/payments/550e8400-e29b-41d4-a716-446655440010" \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -182,7 +182,7 @@ Obtiene todos los pagos de un cliente específico.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/clients/550e8400-e29b-41d4-a716-446655440000/payments" \
+curl -X GET "http://localhost:8200/api/v1/clients/550e8400-e29b-41d4-a716-446655440000/payments" \
   -H "Authorization: Bearer <token>"
 ```
 

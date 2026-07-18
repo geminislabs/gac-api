@@ -1,5 +1,5 @@
-from uuid import UUID
 from typing import Annotated, List, Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession

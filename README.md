@@ -12,7 +12,8 @@ Backend API for Gemini Admin Console (GAC).
 
 2. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   bash scripts/setup.sh
+   # o: make install-dev
    ```
 
 3. Configure environment:
@@ -21,25 +22,22 @@ Backend API for Gemini Admin Console (GAC).
 4. Run migrations:
    ```bash
    alembic upgrade head
+   # o: make migrations-up
    ```
 
 5. Run the server:
    ```bash
-   # Para desarrollo local
-   uvicorn app.main:app --reload --host 0.0.0.0 --port 5160
-
-   # Para acceso desde otras máquinas/red (como EC2)
-   uvicorn app.main:app --host 0.0.0.0 --port 5160
+   make run-dev
    ```
+   Servidor en http://localhost:8200 con hot-reload.
 
-## Development (lint, tests, git hooks)
-
-Install dev dependencies (includes pre-commit; pytest en commits lo instala pre-commit en su propio entorno):
+## Development (lint, tests, CI)
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements-dev.txt
+make help           # Ver comandos disponibles
+make validate       # format-check + lint + test + docker build (como CI)
+make all-checks     # format-check + lint + test
+make run-dev        # uvicorn --reload en puerto 8200
 ```
 
 Register git hooks (once per clone):
@@ -48,15 +46,33 @@ Register git hooks (once per clone):
 pre-commit install
 ```
 
-Run all checks manually (same as CI and pre-commit hooks):
+Run hooks manually:
 
 ```bash
 pre-commit run --all-files
 ```
 
-On each `git commit`, pre-commit runs ruff, black, and pytest automatically (pytest usa un entorno propio de pre-commit; no hace falta activar el venv).
+On each `git commit`, pre-commit runs Ruff and Black. Los tests se ejecutan en CI (`quality.yml`) y con `make test` / `make validate`.
 
-Si añades dependencias en `requirements.txt`, actualiza también `additional_dependencies` del hook `pytest` en `.pre-commit-config.yaml`.
+PostgreSQL de test local (integración futura):
+
+```bash
+make test-db-up    # puerto 5433
+make test-db-down
+```
+
+Ver `tests/README.md` para fixtures SQLite (`db_session_sqlite`, `client_sqlite`).
+
+Seguridad y gobernanza (paridad con siscom-api):
+
+```bash
+make scan-secrets          # Gitleaks
+make audit-deps            # pip-audit
+make scan-osv              # OSV-Scanner
+make verify-github-config  # checklist de secrets/vars
+```
+
+Documentación de gobernanza: `docs/GOVERNANCE.md`, `CONTRIBUTING.md`, `AGENTS.md`.
 
 ## Documentation
 

@@ -1,11 +1,14 @@
 from __future__ import annotations
+
 from datetime import datetime
 from decimal import Decimal
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
-from sqlalchemy import String, Integer, ForeignKey, Text, Numeric, DateTime, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.core.database import Base
 
 if TYPE_CHECKING:

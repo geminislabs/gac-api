@@ -86,7 +86,7 @@ def decode_service_token(
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/internal/tokens/app" \
+curl -X POST "http://localhost:8200/api/v1/internal/tokens/app" \
   -H "Authorization: Bearer <admin_access_token>"
 ```
 
@@ -97,7 +97,7 @@ import httpx
 
 # 1. Obtener token PASETO
 response = httpx.post(
-    "http://localhost:8000/api/v1/internal/tokens/app",
+    "http://localhost:8200/api/v1/internal/tokens/app",
     headers={"Authorization": f"Bearer {admin_token}"}
 )
 paseto_token = response.json()["data"]
@@ -176,7 +176,7 @@ Este endpoint permite refrescar tokens PASETO que están próximos a expirar o q
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/internal/tokens/refresh" \
+curl -X POST "http://localhost:8200/api/v1/internal/tokens/refresh" \
   -H "Authorization: Bearer <admin_access_token>" \
   -H "Content-Type: application/json" \
   -d '{"token": "v4.local..."}'
@@ -189,7 +189,7 @@ import httpx
 
 # Refrescar un token existente
 response = httpx.post(
-    "http://localhost:8000/api/v1/internal/tokens/refresh",
+    "http://localhost:8200/api/v1/internal/tokens/refresh",
     headers={"Authorization": f"Bearer {admin_token}"},
     json={"token": existing_paseto_token}
 )
@@ -248,7 +248,7 @@ Endpoint de debugging para verificar información del usuario autenticado actual
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/internal/debug/user" \
+curl -X GET "http://localhost:8200/api/v1/internal/debug/user" \
   -H "Authorization: Bearer <admin_access_token>"
 ```
 

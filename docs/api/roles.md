@@ -55,7 +55,7 @@ Crea un nuevo rol en el sistema.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/roles" \
+curl -X POST "http://localhost:8200/api/v1/roles" \
   -H "Authorization: Bearer <admin_token>" \
   -H "Content-Type: application/json" \
   -d '{"name": "supervisor"}'
@@ -102,7 +102,7 @@ Lista todos los roles disponibles en el sistema.
 ### Ejemplo cURL
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/roles" \
+curl -X GET "http://localhost:8200/api/v1/roles" \
   -H "Authorization: Bearer <admin_token>"
 ```
 
@@ -149,7 +149,7 @@ Asigna un rol a un usuario específico.
 ### Ejemplo cURL
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/users/550e8400-e29b-41d4-a716-446655440001/roles/550e8400-e29b-41d4-a716-446655440020" \
+curl -X POST "http://localhost:8200/api/v1/users/550e8400-e29b-41d4-a716-446655440001/roles/550e8400-e29b-41d4-a716-446655440020" \
   -H "Authorization: Bearer <admin_token>"
 ```
 
@@ -195,7 +195,7 @@ Revoca un rol de un usuario específico.
 ### Ejemplo cURL
 
 ```bash
-curl -X DELETE "http://localhost:8000/api/v1/users/550e8400-e29b-41d4-a716-446655440001/roles/550e8400-e29b-41d4-a716-446655440020" \
+curl -X DELETE "http://localhost:8200/api/v1/users/550e8400-e29b-41d4-a716-446655440001/roles/550e8400-e29b-41d4-a716-446655440020" \
   -H "Authorization: Bearer <admin_token>"
 ```
 
