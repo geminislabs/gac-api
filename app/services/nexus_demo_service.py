@@ -70,6 +70,30 @@ class NexusDemoService:
 
         return demo, dict(invite or {})
 
+    async def regenerate(self, demo: NexusDemo) -> dict[str, Any]:
+        """Libera la cuenta atascada y emite un código nuevo para el mismo cliente.
+
+        Es la salida cuando un alta se quedó a medias: el cliente no puede
+        entrar y su correo está bloqueado. Antes hacía falta entrar por SSH.
+
+        El orden importa. Primero liberar —que borra el usuario de Cognito y
+        deja el correo disponible—, y solo después emitir. Al revés, el código
+        nuevo apuntaría a un tenant cuya cuenta sigue rota.
+
+        La ficha comercial NO se toca: misma empresa, mismo vendedor, mismas
+        notas. Cambia el código, no el registro de a quién se le está enseñando
+        el producto.
+        """
+        await nexus.release_tenant(demo.tenant_id)
+
+        invite = await nexus.create_otp_invite(
+            tenant_id=demo.tenant_id,
+            scenario=demo.scenario,
+            email=demo.recipient_email,
+            ttl_hours=demo.ttl_hours,
+        )
+        return dict(invite or {})
+
     async def get(self, demo_id: UUID) -> Optional[NexusDemo]:
         result = await self.db.execute(
             select(NexusDemo).where(NexusDemo.demo_id == demo_id)

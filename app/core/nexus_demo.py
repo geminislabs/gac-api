@@ -119,6 +119,24 @@ async def create_otp_invite(
 # services/demo-invite-gate/src/register_flow.gleam en nexus-demo-environment.
 
 
+async def release_tenant(tenant_id: str) -> Any:
+    """Libera una cuenta de demo que quedó a medias.
+
+    El alta toca tres sistemas sin una transacción que los abarque; si un paso
+    falla, el correo del cliente queda bloqueado y no hay endpoint en
+    siscom-admin-api para desbloquearlo. Esto lo desatasca: teardown, borrado
+    del usuario en Cognito, liberación del correo y quemado de las invitaciones.
+
+    Es síncrono porque justo después se emite una invitación nueva: con el
+    usuario aún en Cognito, el alta fallaría con UsernameExistsException.
+    """
+    return await _request(
+        "POST",
+        f"/internal/demo-tenants/{tenant_id}/release",
+        timeout=_TIMEOUT_SLOW,
+    )
+
+
 async def signal_extend(tenant_id: str, ttl_hours: int) -> Any:
     return await _request(
         "POST",
