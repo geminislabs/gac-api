@@ -29,16 +29,17 @@ class NexusDemoService:
     async def create(
         self, payload: NexusDemoCreate, created_by: UUID
     ) -> tuple[NexusDemo, dict[str, Any]]:
-        """Crea la ficha, emite la invitación y arranca el aprovisionamiento.
+        """Crea la ficha y emite la invitación.
 
-        Orden deliberado:
+        **No arranca el workflow de aprovisionamiento**, y es importante que no
+        lo haga: lo arranca el propio invite-gate cuando el cliente canjea el
+        código y se registra (`register_flow.gleam`), porque necesita el
+        `organization_id` y el `user_id` que solo existen a partir de ese
+        registro. Arrancarlo aquí creaba un workflow sin esos datos y chocaba
+        con el que el gate lanza después para el mismo tenant.
 
-        1. La invitación primero, porque devuelve el código y es lo que el
-           vendedor necesita en pantalla. Es un INSERT en el gate y responde
-           en milisegundos.
-        2. El workflow después. Tarda minutos, así que si fallara ya tendríamos
-           el código: la demo queda "pendiente de aprovisionar", que es un
-           estado recuperable, en vez de perder el código emitido.
+        Efecto secundario deseable: una demo que nadie canjea no consume
+        infraestructura.
 
         Lo que NO se hace: reintentar la creación de la invitación. No es
         idempotente — un reintento ciego acuña un segundo código y el vendedor
@@ -67,28 +68,7 @@ class NexusDemoService:
         await self.db.commit()
         await self.db.refresh(demo)
 
-        try:
-            await nexus.start_demo_tenant(
-                tenant_id=tenant_id,
-                scenario=payload.scenario,
-                email=str(payload.recipient_email),
-                ttl_hours=ttl_hours,
-            )
-            provisioning = True
-        except nexus.NexusDemoError as exc:
-            # La ficha y el código ya existen y son válidos. Se informa, pero no
-            # se tumba la operación: reaprovisionar es recuperable, reemitir el
-            # código no lo es tanto.
-            logger.warning(
-                "demo %s: invitación emitida pero el aprovisionamiento falló: %s",
-                tenant_id,
-                exc,
-            )
-            provisioning = False
-
-        invite = dict(invite or {})
-        invite["provisioning"] = provisioning
-        return demo, invite
+        return demo, dict(invite or {})
 
     async def get(self, demo_id: UUID) -> Optional[NexusDemo]:
         result = await self.db.execute(

@@ -72,4 +72,3 @@ class NexusDemoCreated(BaseModel):
     access_url: str
     otp: str
     otp_expires_in_seconds: Optional[int] = None
-    provisioning: bool = True

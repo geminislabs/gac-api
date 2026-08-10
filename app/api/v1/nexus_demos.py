@@ -104,7 +104,6 @@ async def create_nexus_demo(
             access_url=f"{base}/access",
             otp=invite.get("otp", ""),
             otp_expires_in_seconds=invite.get("ttl_seconds"),
-            provisioning=invite.get("provisioning", True),
         ),
     )
 
