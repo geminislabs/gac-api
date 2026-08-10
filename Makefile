@@ -1,4 +1,4 @@
-.PHONY: help install install-dev lint format format-check test test-cov build run run-dev stop clean deploy-test validate all-checks health logs shell db-shell migrations-create migrations-up migrations-down migrations-history dev scan-secrets audit-deps scan-osv verify-github-config
+.PHONY: help install install-dev lint format format-check test test-cov build run run-dev stop clean deploy-test validate all-checks health logs shell db-shell migrations-check migrations-create migrations-up migrations-down migrations-history dev scan-secrets audit-deps scan-osv verify-github-config
 
 help:  ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -76,6 +76,9 @@ validate: format-check lint test build  ## Pipeline local equivalente a CI quali
 
 migrations-create:  ## Crea una nueva migración (usar: make migrations-create NAME="nombre")
 	alembic revision --autogenerate -m "$(NAME)"
+
+migrations-check:  ## Compara el estado real de la base con lo que alembic cree
+	python -m scripts.check_migration_drift
 
 migrations-up:  ## Aplica todas las migraciones pendientes
 	alembic upgrade head
