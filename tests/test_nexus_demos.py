@@ -5,6 +5,8 @@ el gate valida por longitud, los topes de vigencia, y el manejo de una
 configuración ausente —que es el estado normal en local y en los tests—.
 """
 
+from types import SimpleNamespace
+
 import pytest
 from pydantic import ValidationError
 
@@ -107,3 +109,69 @@ class TestValidacionDeEntrada:
     def test_empresa_vacia(self):
         with pytest.raises(ValidationError):
             NexusDemoCreate(company_name="", recipient_email="ops@acme.mx")
+
+
+class TestRegenerar:
+    """El orden de la regeneración importa y conviene fijarlo con un test.
+
+    Liberar primero, emitir después. Al revés, el código nuevo apuntaría a un
+    tenant cuya cuenta sigue rota y el cliente volvería a atascarse — pero esta
+    vez con un código recién entregado.
+    """
+
+    @pytest.mark.asyncio
+    async def test_libera_antes_de_emitir(self, monkeypatch):
+        from app.services.nexus_demo_service import NexusDemoService
+
+        orden = []
+
+        async def fake_release(tenant_id):
+            orden.append(("release", tenant_id))
+
+        async def fake_invite(**kwargs):
+            orden.append(("invite", kwargs["tenant_id"]))
+            return {"otp": "123456", "ttl_seconds": 900}
+
+        monkeypatch.setattr("app.core.nexus_demo.release_tenant", fake_release)
+        monkeypatch.setattr("app.core.nexus_demo.create_otp_invite", fake_invite)
+
+        demo = SimpleNamespace(
+            tenant_id="demo-abc",
+            scenario="commercial",
+            recipient_email="ops@acme.mx",
+            ttl_hours=168,
+        )
+        invite = await NexusDemoService(db=None).regenerate(demo)
+
+        assert orden == [("release", "demo-abc"), ("invite", "demo-abc")]
+        assert invite["otp"] == "123456"
+
+    @pytest.mark.asyncio
+    async def test_si_falla_liberar_no_emite_codigo(self, monkeypatch):
+        """Un código nuevo sobre una cuenta que sigue rota es peor que ninguno:
+        el vendedor lo entregaría creyendo que ya está resuelto."""
+        from app.core.nexus_demo import NexusDemoError
+        from app.services.nexus_demo_service import NexusDemoService
+
+        emitidos = []
+
+        async def fake_release(tenant_id):
+            raise NexusDemoError("el entorno de demo respondió 502", 502)
+
+        async def fake_invite(**kwargs):
+            emitidos.append(kwargs)
+            return {"otp": "000000"}
+
+        monkeypatch.setattr("app.core.nexus_demo.release_tenant", fake_release)
+        monkeypatch.setattr("app.core.nexus_demo.create_otp_invite", fake_invite)
+
+        demo = SimpleNamespace(
+            tenant_id="demo-abc",
+            scenario="commercial",
+            recipient_email="ops@acme.mx",
+            ttl_hours=168,
+        )
+        with pytest.raises(NexusDemoError):
+            await NexusDemoService(db=None).regenerate(demo)
+
+        assert emitidos == []
