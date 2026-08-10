@@ -1,6 +1,7 @@
 import asyncio
 from logging.config import fileConfig
 
+import sqlalchemy as sa
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
@@ -58,14 +59,54 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        # La tabla de versiones vive en 'gac', junto a lo que gestiona.
+        # Por defecto alembic la crearia en el search_path, que es 'public'
+        # porque DB_SCHEME no se escribe en el .env del despliegue. El usuario
+        # de la aplicacion no tiene por que poder crear nada en public, y de
+        # hecho en produccion no puede.
+        version_table_schema="gac",
     )
 
     with context.begin_transaction():
         context.run_migrations()
 
 
+def _ensure_schema(connection: Connection) -> None:
+    """Crea el esquema 'gac' solo si de verdad falta.
+
+    Orden obligado: la tabla de versiones de alembic vive en 'gac', asi que el
+    esquema tiene que existir ANTES de que alembic la cree, es decir antes de la
+    primera migracion.
+
+    Se consulta primero en vez de lanzar 'CREATE SCHEMA IF NOT EXISTS': Postgres
+    comprueba el privilegio CREATE sobre la base antes de evaluar el IF NOT
+    EXISTS, asi que la version a ciegas falla con "permission denied" incluso
+    cuando el esquema ya esta. El usuario de la aplicacion en produccion no
+    tiene ese privilegio, y no deberia necesitarlo para migrar un esquema que
+    ya existe.
+    """
+    exists = connection.execute(
+        sa.text("SELECT 1 FROM information_schema.schemata WHERE schema_name = 'gac'")
+    ).scalar()
+    if not exists:
+        connection.execute(sa.text("CREATE SCHEMA gac"))
+
+    # El commit va SIEMPRE, se haya creado el esquema o no. El SELECT de arriba
+    # ya abre una transaccion implicita, y si se deja abierta alembic no es
+    # dueno de la suya: ejecuta las migraciones y al cerrar la conexion se hace
+    # rollback de todo, sin un solo error por ninguna parte.
+    connection.commit()
+
+
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    _ensure_schema(connection)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        # Ver la nota en run_migrations_offline: la tabla de versiones va en
+        # 'gac', no en el search_path.
+        version_table_schema="gac",
+    )
 
     with context.begin_transaction():
         context.run_migrations()
