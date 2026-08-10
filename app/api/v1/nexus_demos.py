@@ -157,6 +157,43 @@ async def update_nexus_demo(
 
 
 @router.post(
+    "/nexus-demos/{demo_id}/regenerate",
+    response_model=ResponseModel[NexusDemoCreated],
+)
+async def regenerate_nexus_demo(
+    demo_id: UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_roles(DEMO_ROLES))],
+):
+    """Libera una cuenta atascada y emite un código nuevo, sin cambiar la ficha.
+
+    Invalida el código anterior: si el cliente todavía lo tuviera, deja de
+    servir. Por eso la interfaz pide confirmación explícita.
+    """
+    _guard_configured()
+    service = NexusDemoService(db)
+    demo = await service.get(demo_id)
+    if not demo:
+        raise HTTPException(status_code=404, detail="Acceso de demo no encontrado")
+    _require_owner_or_admin(demo, current_user)
+    try:
+        invite = await service.regenerate(demo)
+    except nexus.NexusDemoError as exc:
+        raise _nexus_error(exc)
+
+    base = (settings.NEXUS_DEMO_OPS_URL or "").rstrip("/")
+    return ResponseModel(
+        message="Acceso regenerado",
+        data=NexusDemoCreated(
+            demo=_to_response(demo, None),
+            access_url=f"{base}/access",
+            otp=invite.get("otp", ""),
+            otp_expires_in_seconds=invite.get("ttl_seconds"),
+        ),
+    )
+
+
+@router.post(
     "/nexus-demos/{demo_id}/extend", response_model=ResponseModel[NexusDemoResponse]
 )
 async def extend_nexus_demo(
