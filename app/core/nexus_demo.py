@@ -113,21 +113,10 @@ async def create_otp_invite(
     )
 
 
-async def start_demo_tenant(
-    tenant_id: str, scenario: str, email: str, ttl_hours: int
-) -> Any:
-    """Arranca el workflow que aprovisiona la flota simulada."""
-    return await _request(
-        "POST",
-        "/internal/workflows/demo-tenant",
-        json={
-            "tenant_id": tenant_id,
-            "scenario": scenario,
-            "user_email": email,
-            "ttl_hours": ttl_hours,
-        },
-        timeout=_TIMEOUT_SLOW,
-    )
+# No hay start_demo_tenant a proposito: el aprovisionamiento lo arranca el
+# invite-gate cuando el cliente canjea el codigo y se registra, porque necesita
+# el organization_id y el user_id que nacen de ese registro. Ver
+# services/demo-invite-gate/src/register_flow.gleam en nexus-demo-environment.
 
 
 async def signal_extend(tenant_id: str, ttl_hours: int) -> Any:
