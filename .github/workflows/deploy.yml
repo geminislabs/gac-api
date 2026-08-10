@@ -75,12 +75,14 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           PASETO_SECRET_KEY: ${{ secrets.PASETO_SECRET_KEY }}
+          NEXUS_DEMO_OPS_URL: ${{ vars.NEXUS_DEMO_OPS_URL }}
+          GATE_INTERNAL_SECRET: ${{ secrets.GATE_INTERNAL_SECRET }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_SSH_PORT }}
-          envs: IMAGE_NAME,CONTAINER_NAME,PORT,DB_HOST,DB_PORT,DB_USER,DB_PASSWORD,DB_NAME,JWT_SECRET,PASETO_SECRET_KEY
+          envs: IMAGE_NAME,CONTAINER_NAME,PORT,DB_HOST,DB_PORT,DB_USER,DB_PASSWORD,DB_NAME,JWT_SECRET,PASETO_SECRET_KEY,NEXUS_DEMO_OPS_URL,GATE_INTERNAL_SECRET
           script: |
             cd /home/${{ secrets.EC2_USERNAME }}/gac-api
 
@@ -102,6 +104,8 @@ jobs:
             DB_NAME=${DB_NAME}
             JWT_SECRET=${JWT_SECRET}
             PASETO_SECRET_KEY=${PASETO_SECRET_KEY}
+            NEXUS_DEMO_OPS_URL=${NEXUS_DEMO_OPS_URL}
+            GATE_INTERNAL_SECRET=${GATE_INTERNAL_SECRET}
             EOF
 
             # Detener y eliminar el contenedor existente de forma robusta
@@ -136,6 +140,25 @@ jobs:
 
             # Esperar un momento para que el contenedor se inicie
             sleep 5
+
+            # Aplicar migraciones pendientes.
+            #
+            # Hasta ahora el despliegue nunca las corrio: 'alembic upgrade head'
+            # solo estaba en el Makefile y en el README, como paso manual de la
+            # instalacion local. Por eso la base se quedo con las tablas de
+            # autenticacion y le faltaban orders, order_items, payments y
+            # shipments, declaradas en la migracion del 2026-06-09.
+            #
+            # Es seguro automatizarlo porque las dos migraciones llevan guardas
+            # de existencia: crean lo que falta y saltan lo que ya esta. Se
+            # probo contra una replica del estado real de la base.
+            #
+            # Va DESPUES de levantar el contenedor porque alembic vive dentro de
+            # la imagen y lee la misma configuracion que la app. Si falla, falla
+            # el despliegue: es preferible a arrancar con el esquema desalineado.
+            echo "Aplicando migraciones..."
+            docker exec ${CONTAINER_NAME} alembic upgrade head
+
 
             # Verificar que el contenedor se creó correctamente
             if ! docker ps | grep -q ${CONTAINER_NAME}; then
