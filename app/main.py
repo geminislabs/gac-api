@@ -8,6 +8,7 @@ from app.api.v1 import (
     clients,
     devices,
     internal,
+    nexus_demos,
     orders,
     payments,
     roles,
@@ -87,6 +88,7 @@ app.include_router(auth.router, prefix="/api/v1", tags=["auth"])
 app.include_router(roles.router, prefix="/api/v1", tags=["roles"])
 app.include_router(users.router, prefix="/api/v1", tags=["users"])
 app.include_router(internal.router, prefix="/api/v1", tags=["internal"])
+app.include_router(nexus_demos.router, prefix="/api/v1", tags=["nexus-demos"])
 
 
 @app.get("/health", tags=["health"])

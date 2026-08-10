@@ -1,3 +1,4 @@
+from .nexus_demos import NexusDemo as NexusDemo
 from .orders import Order as Order
 from .orders import OrderItem as OrderItem
 from .payments import Payment as Payment
