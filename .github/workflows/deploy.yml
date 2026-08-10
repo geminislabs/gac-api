@@ -156,8 +156,18 @@ jobs:
             # Va DESPUES de levantar el contenedor porque alembic vive dentro de
             # la imagen y lee la misma configuracion que la app. Si falla, falla
             # el despliegue: es preferible a arrancar con el esquema desalineado.
+            # El fallo se comprueba explicitamente. 'docker exec' devuelve
+            # no-cero si alembic falla, pero al no ser el ultimo comando del
+            # script la accion SSH no lo propaga: el despliegue de 0.0.1-demos
+            # salio verde con las migraciones caidas por permisos. Un esquema
+            # desalineado reportado como despliegue correcto es peor que un
+            # despliegue rojo.
             echo "Aplicando migraciones..."
-            docker exec ${CONTAINER_NAME} alembic upgrade head
+            if ! docker exec ${CONTAINER_NAME} alembic upgrade head; then
+              echo "ERROR: las migraciones fallaron. El esquema NO esta alineado."
+              docker exec ${CONTAINER_NAME} alembic current || true
+              exit 1
+            fi
 
 
             # Verificar que el contenedor se creó correctamente
