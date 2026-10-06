@@ -60,6 +60,33 @@ def _patch_fk_target(target: str) -> str:
     return target
 
 
+def _read_fk_target(fk):
+    """El destino de una FK en la forma que su versión de SQLAlchemy deja
+    reescribir.
+
+    Hasta 2.0, `fk._colspec` era un atributo de texto («gac.orders.order_id»).
+    En 2.1 es una propiedad de sólo lectura derivada de `fk._given_tokens`, un
+    `ForeignKeyTarget(schema, table_name, column_name)`; asignar `_colspec`
+    da `AttributeError: property '_colspec' of 'ForeignKey' object has no
+    setter`.
+    """
+    if hasattr(fk, "_given_tokens"):
+        return "_given_tokens", fk._given_tokens
+    return "_colspec", fk._colspec
+
+
+def _patched_fk_target(attr: str, original):
+    if attr == "_colspec":
+        return _patch_fk_target(str(original))
+    if original is None or original.schema is None:
+        return original
+    # Mismo aplanado que `_patch_fk_target`: «gac.orders.order_id» pasa a
+    # «gac_orders.order_id», porque SQLite no tiene esquemas.
+    return type(original)(
+        None, f"{original.schema}_{original.table_name}", original.column_name
+    )
+
+
 def _patch_metadata(metadata) -> dict:
     saved: dict = {}
     for table in metadata.tables.values():
@@ -88,9 +115,9 @@ def _patch_metadata(metadata) -> dict:
 
             fk_patches: list[tuple] = []
             for fk in column.foreign_keys:
-                original = fk._colspec
-                fk_patches.append((fk, original))
-                fk._colspec = _patch_fk_target(str(original))
+                attr, original = _read_fk_target(fk)
+                fk_patches.append((fk, attr, original))
+                setattr(fk, attr, _patched_fk_target(attr, original))
 
             for pg_type, sqlite_type in _PG_TYPE_REPLACEMENTS.items():
                 if isinstance(column.type, pg_type):
@@ -127,8 +154,8 @@ def _restore_metadata(metadata, saved: dict) -> None:
                     column.type = saved[key]["type"]
             fk_key = (table_id, column.name, "__fks__")
             if fk_key in saved:
-                for fk, original in saved[fk_key]:
-                    fk._colspec = original
+                for fk, attr, original in saved[fk_key]:
+                    setattr(fk, attr, original)
 
 
 def ensure_sqlite_metadata(metadata) -> None:
