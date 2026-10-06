@@ -42,7 +42,7 @@ updates:
         patterns:
           - cryptography
           - pyseto
-          - python-jose*
+          - PyJWT
           - passlib*
         update-types:
           - minor

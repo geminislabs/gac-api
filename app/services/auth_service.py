@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from jose import JWTError, jwt
+import jwt
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -55,7 +55,7 @@ class AuthService:
             if token_data.type != "refresh":
                 return None
 
-        except (JWTError, ValidationError):
+        except (jwt.PyJWTError, ValidationError):
             return None
 
         stmt = select(User).where(User.user_id == token_data.sub)

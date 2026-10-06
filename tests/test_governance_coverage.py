@@ -8,9 +8,9 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
+import jwt
 import pytest
 from fastapi import HTTPException
-from jose import jwt
 from starlette.requests import Request
 
 from app.api.deps import get_current_user
