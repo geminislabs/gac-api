@@ -1,6 +1,6 @@
 fastapi>=0.109.1
 uvicorn[standard]>=0.23.0
-sqlalchemy[asyncio]>=2.0.0,<2.1  # 2.1 hace `ForeignKey._colspec` de solo lectura y rompe tests/sqlite_metadata.py; producción corre 2.0.x
+sqlalchemy[asyncio]>=2.1.3,<2.2  # 2.1 hace `ForeignKey._colspec` de solo lectura y rompe tests/sqlite_metadata.py; producción corre 2.0.x
 alembic>=1.18.5
 asyncpg>=0.28.0
 pydantic>=2.13.4
