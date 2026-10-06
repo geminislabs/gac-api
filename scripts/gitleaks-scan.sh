@@ -49,4 +49,6 @@ if [[ -f "$ROOT/.gitleaks-baseline.json" ]]; then
 	BASELINE_ARGS=(--baseline-path .gitleaks-baseline.json)
 fi
 
-exec "$BIN" detect --source . --config .gitleaks.toml --no-git "${BASELINE_ARGS[@]}" --redact --verbose "$@"
+# `${arr[@]+"${arr[@]}"}` y no `"${arr[@]}"`: con `set -u`, un array vacío da
+# «unbound variable» en el bash 3.2 de macOS (no en el del CI).
+exec "$BIN" detect --source . --config .gitleaks.toml --no-git ${BASELINE_ARGS[@]+"${BASELINE_ARGS[@]}"} --redact --verbose "$@"
