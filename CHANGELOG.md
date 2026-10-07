@@ -20,6 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     PyJWT (`tests/test_pyjwt_compat.py`, con un token literal). Al revés también —verificado a
     mano—, así que volver a la imagen anterior tampoco cierra sesiones
 
+### Changed
+
+- Mínimos de dependencias al día, en un solo cambio en vez de los ocho PR de Dependabot que lo
+  proponían por separado (#17, #21, #25, #26, #33, #38, #39, #40, abiertos desde julio): `alembic`
+  1.20.0, `asyncpg` 0.31.0, `pydantic-settings` 2.15.0, `python-multipart` 0.0.32, `uvicorn` 0.54.0,
+  y en desarrollo `pre-commit` 4.6.2, `pytest-asyncio` 1.4.0 y `pytest-cov` 7.1.0. **No cambia lo que
+  se instala**: los requisitos son `>=` y el CI y la imagen ya instalaban esas versiones o
+  posteriores; sólo deja de admitir las viejas
+- `actions/setup-python` v6 → v7 en `quality.yml` y `deploy.yml` (#20)
+
 ### Fixed
 
 - **SQLAlchemy 2.1** (`sqlalchemy[asyncio]>=2.1.3,<2.2`). La 2.1 (24/09/2026) hizo
