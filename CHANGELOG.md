@@ -20,12 +20,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     PyJWT (`tests/test_pyjwt_compat.py`, con un token literal). Al revés también —verificado a
     mano—, así que volver a la imagen anterior tampoco cierra sesiones
 
+### Changed
+
+- Mínimos de dependencias al día, en un solo cambio en vez de los ocho PR de Dependabot que lo
+  proponían por separado (#17, #21, #25, #26, #33, #38, #39, #40, abiertos desde julio): `alembic`
+  1.20.0, `asyncpg` 0.31.0, `pydantic-settings` 2.15.0, `python-multipart` 0.0.32, `uvicorn` 0.54.0,
+  y en desarrollo `pre-commit` 4.6.2, `pytest-asyncio` 1.4.0 y `pytest-cov` 7.1.0. **No cambia lo que
+  se instala**: los requisitos son `>=` y el CI y la imagen ya instalaban esas versiones o
+  posteriores; sólo deja de admitir las viejas
+- `actions/setup-python` v6 → v7 en `quality.yml` y `deploy.yml` (#20)
+
 ### Fixed
 
-- `sqlalchemy[asyncio]` acotado a `<2.1`. SQLAlchemy 2.1 (24/09/2026) hizo `ForeignKey._colspec` de
-  sólo lectura y `tests/sqlite_metadata.py` lo modifica: 12 tests daban error en cualquier PR. Además,
-  el próximo deploy habría instalado 2.1 en producción, que corre 2.0.x desde el 10/08, sin haberla
-  probado. Subir a 2.1 queda para su propio PR, adaptando `tests/sqlite_metadata.py`
+- **SQLAlchemy 2.1** (`sqlalchemy[asyncio]>=2.1.3,<2.2`). La 2.1 (24/09/2026) hizo
+  `ForeignKey._colspec` de sólo lectura y `tests/sqlite_metadata.py` lo reescribía: 12 tests daban
+  error en cualquier PR, y por eso se acotó primero a `<2.1` (#37). Ahora el parche de SQLite
+  reescribe `ForeignKey._given_tokens` en 2.1 y `_colspec` en 2.0, así que vale con las dos.
+  Verificado: 79 tests con 2.0.54 y con 2.1.3, y contra Postgres real con 2.1.3 las tres migraciones
+  de Alembic, login, refresh y `/users/me`
+- `scripts/gitleaks-scan.sh` funciona en el bash 3.2 de macOS (con `set -u`, el array vacío de
+  `BASELINE_ARGS` daba «unbound variable»)
 
 ### Added
 
