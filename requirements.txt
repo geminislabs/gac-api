@@ -10,5 +10,5 @@ email-validator>=2.3.0
 passlib[argon2]>=1.7.4
 PyJWT>=2.15.1
 cryptography>=50.0.0
-pyseto>=1.9.3
+pyseto>=1.10.0
 httpx>=0.28.1
