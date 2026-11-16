@@ -1,5 +1,5 @@
 # Dockerfile para GAC API
-FROM python:3.14-slim
+FROM python:3.15-slim
 
 # Variables de entorno
 ENV PYTHONDONTWRITEBYTECODE=1 \
